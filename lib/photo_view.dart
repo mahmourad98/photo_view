@@ -1,22 +1,21 @@
 library photo_view;
 
 import 'package:flutter/material.dart';
-
 import 'package:photo_view/src/controller/photo_view_controller.dart';
-import 'package:photo_view/src/controller/photo_view_scalestate_controller.dart';
+import 'package:photo_view/src/controller/photo_view_scale_state_controller.dart';
 import 'package:photo_view/src/core/photo_view_core.dart';
-import 'package:photo_view/src/photo_view_computed_scale.dart';
-import 'package:photo_view/src/photo_view_scale_state.dart';
-import 'package:photo_view/src/photo_view_wrappers.dart';
+import 'package:photo_view/src/utils/photo_view_computed_scale.dart';
 import 'package:photo_view/src/utils/photo_view_hero_attributes.dart';
+import 'package:photo_view/src/utils/photo_view_scale_state.dart';
+
+import 'src/widgets/photo_view_wrapper_widget.dart';
 
 export 'src/controller/photo_view_controller.dart';
-export 'src/controller/photo_view_scalestate_controller.dart';
-export 'src/core/photo_view_gesture_detector.dart'
-    show PhotoViewGestureDetectorScope;
-export 'src/photo_view_computed_scale.dart';
-export 'src/photo_view_scale_state.dart';
+export 'src/controller/photo_view_scale_state_controller.dart';
+export 'src/core/photo_view_gesture_detector.dart';
+export 'src/utils/photo_view_computed_scale.dart';
 export 'src/utils/photo_view_hero_attributes.dart';
+export 'src/utils/photo_view_scale_state.dart';
 
 /// A [StatefulWidget] that contains all the photo view rendering elements.
 ///
@@ -358,17 +357,17 @@ class PhotoView extends StatefulWidget {
   /// Defines the maximum size in which the image will be allowed to assume, it
   /// is proportional to the original image size. Can be either a double (absolute value) or a
   /// [PhotoViewComputedScale], that can be multiplied by a double
-  final dynamic maxScale;
+  final PhotoViewComputedScale? maxScale;
 
   /// Defines the minimum size in which the image will be allowed to assume, it
   /// is proportional to the original image size. Can be either a double (absolute value) or a
   /// [PhotoViewComputedScale], that can be multiplied by a double
-  final dynamic minScale;
+  final PhotoViewComputedScale? minScale;
 
   /// Defines the initial size in which the image will be assume in the mounting of the component, it
   /// is proportional to the original image size. Can be either a double (absolute value) or a
   /// [PhotoViewComputedScale], that can be multiplied by a double
-  final dynamic initialScale;
+  final PhotoViewComputedScale? initialScale;
 
   /// A way to control PhotoView transformation factors externally and listen to its updates
   final PhotoViewControllerBase? controller;
@@ -425,8 +424,7 @@ class PhotoView extends StatefulWidget {
   }
 }
 
-class _PhotoViewState extends State<PhotoView>
-    with AutomaticKeepAliveClientMixin {
+class _PhotoViewState extends State<PhotoView> with AutomaticKeepAliveClientMixin {
   // image retrieval
 
   // controller
@@ -508,63 +506,64 @@ class _PhotoViewState extends State<PhotoView>
         BoxConstraints constraints,
       ) {
         final computedOuterSize = widget.customSize ?? constraints.biggest;
-        final backgroundDecoration = widget.backgroundDecoration ??
-            const BoxDecoration(color: Colors.black);
+        final backgroundDecoration = widget.backgroundDecoration ?? const BoxDecoration(color: Colors.black);
 
-        return widget._isCustomChild
-            ? CustomChildWrapper(
-                child: widget.child,
-                childSize: widget.childSize,
-                backgroundDecoration: backgroundDecoration,
-                heroAttributes: widget.heroAttributes,
-                scaleStateChangedCallback: widget.scaleStateChangedCallback,
-                enableRotation: widget.enableRotation,
-                controller: _controller,
-                scaleStateController: _scaleStateController,
-                maxScale: widget.maxScale,
-                minScale: widget.minScale,
-                initialScale: widget.initialScale,
-                basePosition: widget.basePosition,
-                scaleStateCycle: widget.scaleStateCycle,
-                onTapUp: widget.onTapUp,
-                onTapDown: widget.onTapDown,
-                onScaleEnd: widget.onScaleEnd,
-                outerSize: computedOuterSize,
-                gestureDetectorBehavior: widget.gestureDetectorBehavior,
-                tightMode: widget.tightMode,
-                filterQuality: widget.filterQuality,
-                disableGestures: widget.disableGestures,
-                enablePanAlways: widget.enablePanAlways,
-                strictScale: widget.strictScale,
-              )
-            : ImageWrapper(
-                imageProvider: widget.imageProvider!,
-                loadingBuilder: widget.loadingBuilder,
-                backgroundDecoration: backgroundDecoration,
-                semanticLabel: widget.semanticLabel,
-                gaplessPlayback: widget.gaplessPlayback,
-                heroAttributes: widget.heroAttributes,
-                scaleStateChangedCallback: widget.scaleStateChangedCallback,
-                enableRotation: widget.enableRotation,
-                controller: _controller,
-                scaleStateController: _scaleStateController,
-                maxScale: widget.maxScale,
-                minScale: widget.minScale,
-                initialScale: widget.initialScale,
-                basePosition: widget.basePosition,
-                scaleStateCycle: widget.scaleStateCycle,
-                onTapUp: widget.onTapUp,
-                onTapDown: widget.onTapDown,
-                onScaleEnd: widget.onScaleEnd,
-                outerSize: computedOuterSize,
-                gestureDetectorBehavior: widget.gestureDetectorBehavior,
-                tightMode: widget.tightMode,
-                filterQuality: widget.filterQuality,
-                disableGestures: widget.disableGestures,
-                errorBuilder: widget.errorBuilder,
-                enablePanAlways: widget.enablePanAlways,
-                strictScale: widget.strictScale,
-              );
+        if (widget._isCustomChild ) {
+          return CustomChildWrapper(
+            child: widget.child,
+            childSize: widget.childSize,
+            backgroundDecoration: backgroundDecoration,
+            heroAttributes: widget.heroAttributes,
+            scaleStateChangedCallback: widget.scaleStateChangedCallback,
+            enableRotation: widget.enableRotation,
+            controller: _controller,
+            scaleStateController: _scaleStateController,
+            maxScale: widget.maxScale,
+            minScale: widget.minScale,
+            initialScale: widget.initialScale,
+            basePosition: widget.basePosition,
+            scaleStateCycle: widget.scaleStateCycle,
+            onTapUp: widget.onTapUp,
+            onTapDown: widget.onTapDown,
+            onScaleEnd: widget.onScaleEnd,
+            outerSize: computedOuterSize,
+            gestureDetectorBehavior: widget.gestureDetectorBehavior,
+            tightMode: widget.tightMode,
+            filterQuality: widget.filterQuality,
+            disableGestures: widget.disableGestures,
+            enablePanAlways: widget.enablePanAlways,
+            strictScale: widget.strictScale,
+          );
+        }
+
+        return ImageWrapper(
+          imageProvider: widget.imageProvider!,
+          loadingBuilder: widget.loadingBuilder,
+          backgroundDecoration: backgroundDecoration,
+          semanticLabel: widget.semanticLabel,
+          gaplessPlayback: widget.gaplessPlayback,
+          heroAttributes: widget.heroAttributes,
+          scaleStateChangedCallback: widget.scaleStateChangedCallback,
+          enableRotation: widget.enableRotation,
+          controller: _controller,
+          scaleStateController: _scaleStateController,
+          maxScale: widget.maxScale,
+          minScale: widget.minScale,
+          initialScale: widget.initialScale,
+          basePosition: widget.basePosition,
+          scaleStateCycle: widget.scaleStateCycle,
+          onTapUp: widget.onTapUp,
+          onTapDown: widget.onTapDown,
+          onScaleEnd: widget.onScaleEnd,
+          outerSize: computedOuterSize,
+          gestureDetectorBehavior: widget.gestureDetectorBehavior,
+          tightMode: widget.tightMode,
+          filterQuality: widget.filterQuality,
+          disableGestures: widget.disableGestures,
+          errorBuilder: widget.errorBuilder,
+          enablePanAlways: widget.enablePanAlways,
+          strictScale: widget.strictScale,
+        );
       },
     );
   }

@@ -91,19 +91,15 @@ class PhotoViewControllerValue {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is PhotoViewControllerValue &&
+      (other is PhotoViewControllerValue &&
           runtimeType == other.runtimeType &&
           position == other.position &&
           scale == other.scale &&
           rotation == other.rotation &&
-          rotationFocusPoint == other.rotationFocusPoint;
+          rotationFocusPoint == other.rotationFocusPoint);
 
   @override
-  int get hashCode =>
-      position.hashCode ^
-      scale.hashCode ^
-      rotation.hashCode ^
-      rotationFocusPoint.hashCode;
+  int get hashCode => position.hashCode ^ scale.hashCode ^ rotation.hashCode ^ rotationFocusPoint.hashCode;
 
   @override
   String toString() {
@@ -118,40 +114,41 @@ class PhotoViewControllerValue {
 ///
 /// For details of fields and methods, check [PhotoViewControllerBase].
 ///
-class PhotoViewController
-    implements PhotoViewControllerBase<PhotoViewControllerValue> {
+class PhotoViewController implements PhotoViewControllerBase<PhotoViewControllerValue> {
   PhotoViewController({
     Offset initialPosition = Offset.zero,
     double initialRotation = 0.0,
     double? initialScale,
-  })  : _valueNotifier = IgnorableValueNotifier(
-          PhotoViewControllerValue(
-            position: initialPosition,
-            rotation: initialRotation,
-            scale: initialScale,
-            rotationFocusPoint: null,
-          ),
-        ),
-        super() {
+  }) {
+    // set initial values
     initial = value;
-    prevValue = initial;
+    prevValue = value;
 
+    _valueNotifier = IgnorableValueNotifier(
+      PhotoViewControllerValue(
+        position: initialPosition,
+        rotation: initialRotation,
+        scale: initialScale,
+        rotationFocusPoint: null,
+      ),
+    );
     _valueNotifier.addListener(_changeListener);
+
     _outputCtrl = StreamController<PhotoViewControllerValue>.broadcast();
     _outputCtrl.sink.add(initial);
   }
-
-  final IgnorableValueNotifier<PhotoViewControllerValue> _valueNotifier;
 
   late PhotoViewControllerValue initial;
 
   late StreamController<PhotoViewControllerValue> _outputCtrl;
 
-  @override
-  Stream<PhotoViewControllerValue> get outputStateStream => _outputCtrl.stream;
+  late final IgnorableValueNotifier<PhotoViewControllerValue> _valueNotifier;
 
   @override
   late PhotoViewControllerValue prevValue;
+
+  @override
+  Stream<PhotoViewControllerValue> get outputStateStream => _outputCtrl.stream;
 
   @override
   void reset() {
