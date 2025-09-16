@@ -1,7 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/widgets.dart';
 
-import 'photo_view_hit_corners.dart';
+import 'photo_view_hit_corners_detector.dart';
 
 class PhotoViewGestureDetector extends StatelessWidget {
   const PhotoViewGestureDetector({
@@ -37,40 +37,29 @@ class PhotoViewGestureDetector extends StatelessWidget {
 
     final Axis? axis = scope?.axis;
 
-    final Map<Type, GestureRecognizerFactory> gestures =
-        <Type, GestureRecognizerFactory>{};
+    final Map<Type, GestureRecognizerFactory> gestures = <Type, GestureRecognizerFactory>{};
 
     if (onTapDown != null || onTapUp != null) {
-      gestures[TapGestureRecognizer] =
-          GestureRecognizerFactoryWithHandlers<TapGestureRecognizer>(
+      gestures[TapGestureRecognizer] = GestureRecognizerFactoryWithHandlers<TapGestureRecognizer>(
         () => TapGestureRecognizer(debugOwner: this),
-        (TapGestureRecognizer instance) {
-          instance
-            ..onTapDown = onTapDown
-            ..onTapUp = onTapUp;
-        },
+        (TapGestureRecognizer instance) => instance
+          ..onTapDown = onTapDown
+          ..onTapUp = onTapUp,
       );
     }
 
-    gestures[DoubleTapGestureRecognizer] =
-        GestureRecognizerFactoryWithHandlers<DoubleTapGestureRecognizer>(
+    gestures[DoubleTapGestureRecognizer] = GestureRecognizerFactoryWithHandlers<DoubleTapGestureRecognizer>(
       () => DoubleTapGestureRecognizer(debugOwner: this),
-      (DoubleTapGestureRecognizer instance) {
-        instance..onDoubleTap = onDoubleTap;
-      },
+      (DoubleTapGestureRecognizer instance) => instance..onDoubleTap = onDoubleTap,
     );
 
-    gestures[PhotoViewGestureRecognizer] =
-        GestureRecognizerFactoryWithHandlers<PhotoViewGestureRecognizer>(
-      () => PhotoViewGestureRecognizer(
-          hitDetector: hitDetector, debugOwner: this, validateAxis: axis),
-      (PhotoViewGestureRecognizer instance) {
-        instance
-          ..dragStartBehavior = DragStartBehavior.start
-          ..onStart = onScaleStart
-          ..onUpdate = onScaleUpdate
-          ..onEnd = onScaleEnd;
-      },
+    gestures[PhotoViewGestureRecognizer] = GestureRecognizerFactoryWithHandlers<PhotoViewGestureRecognizer>(
+      () => PhotoViewGestureRecognizer(hitDetector: hitDetector, debugOwner: this, validateAxis: axis),
+      (PhotoViewGestureRecognizer instance) => instance
+        ..dragStartBehavior = DragStartBehavior.start
+        ..onStart = onScaleStart
+        ..onUpdate = onScaleUpdate
+        ..onEnd = onScaleEnd,
     );
 
     return RawGestureDetector(
@@ -88,6 +77,7 @@ class PhotoViewGestureRecognizer extends ScaleGestureRecognizer {
     this.validateAxis,
     PointerDeviceKind? kind,
   }) : super(debugOwner: debugOwner);
+
   final HitCornersDetector? hitDetector;
   final Axis? validateAxis;
 
@@ -124,10 +114,8 @@ class PhotoViewGestureRecognizer extends ScaleGestureRecognizer {
   }
 
   void _computeEvent(PointerEvent event) {
-    if (event is PointerMoveEvent) {
-      if (!event.synthesized) {
-        _pointerLocations[event.pointer] = event.position;
-      }
+    if (event is PointerMoveEvent && !event.synthesized) {
+      _pointerLocations[event.pointer] = event.position;
     } else if (event is PointerDownEvent) {
       _pointerLocations[event.pointer] = event.position;
     } else if (event is PointerUpEvent || event is PointerCancelEvent) {
@@ -140,10 +128,10 @@ class PhotoViewGestureRecognizer extends ScaleGestureRecognizer {
   void _updateDistances() {
     final int count = _pointerLocations.keys.length;
     Offset focalPoint = Offset.zero;
-    for (int pointer in _pointerLocations.keys)
+    for (int pointer in _pointerLocations.keys) {
       focalPoint += _pointerLocations[pointer]!;
-    _currentFocalPoint =
-        count > 0 ? focalPoint / count.toDouble() : Offset.zero;
+    }
+    _currentFocalPoint = count > 0 ? focalPoint / count.toDouble() : Offset.zero;
   }
 
   void _decideIfWeAcceptEvent(PointerEvent event) {
@@ -182,9 +170,7 @@ class PhotoViewGestureDetectorScope extends InheritedWidget {
   }) : super(child: child);
 
   static PhotoViewGestureDetectorScope? of(BuildContext context) {
-    final PhotoViewGestureDetectorScope? scope = context
-        .dependOnInheritedWidgetOfExactType<PhotoViewGestureDetectorScope>();
-    return scope;
+    return context.dependOnInheritedWidgetOfExactType<PhotoViewGestureDetectorScope>();
   }
 
   final Axis? axis;

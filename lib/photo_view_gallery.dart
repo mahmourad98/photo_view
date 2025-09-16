@@ -2,27 +2,13 @@ library photo_view_gallery;
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:photo_view/photo_view.dart'
-    show
-        LoadingBuilder,
-        PhotoView,
-        PhotoViewImageTapDownCallback,
-        PhotoViewImageTapUpCallback,
-        PhotoViewImageScaleEndCallback,
-        ScaleStateCycle;
-
-import 'package:photo_view/src/controller/photo_view_controller.dart';
-import 'package:photo_view/src/controller/photo_view_scalestate_controller.dart';
-import 'package:photo_view/src/core/photo_view_gesture_detector.dart';
-import 'package:photo_view/src/photo_view_scale_state.dart';
-import 'package:photo_view/src/utils/photo_view_hero_attributes.dart';
+import 'package:photo_view/photo_view.dart';
 
 /// A type definition for a [Function] that receives a index after a page change in [PhotoViewGallery]
 typedef PhotoViewGalleryPageChangedCallback = void Function(int index);
 
 /// A type definition for a [Function] that defines a page in [PhotoViewGallery.build]
-typedef PhotoViewGalleryBuilder = PhotoViewGalleryPageOptions Function(
-    BuildContext context, int index);
+typedef PhotoViewGalleryBuilder = PhotoViewGalleryPageOptions Function(BuildContext context, int index);
 
 /// A [StatefulWidget] that shows multiple [PhotoView] widgets in a [PageView]
 ///
@@ -207,8 +193,7 @@ class PhotoViewGallery extends StatefulWidget {
 }
 
 class _PhotoViewGalleryState extends State<PhotoViewGallery> {
-  late final PageController _controller =
-      widget.pageController ?? PageController();
+  late final PageController _controller = widget.pageController ?? PageController();
 
   void scaleStateChangedCallback(PhotoViewScaleState scaleState) {
     if (widget.scaleStateChangedCallback != null) {
@@ -250,68 +235,71 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
     final pageOption = _buildPageOption(context, index);
     final isCustomChild = pageOption.child != null;
 
-    final PhotoView photoView = isCustomChild
-        ? PhotoView.customChild(
-            key: ObjectKey(index),
-            child: pageOption.child,
-            childSize: pageOption.childSize,
-            backgroundDecoration: widget.backgroundDecoration,
-            wantKeepAlive: widget.wantKeepAlive,
-            controller: pageOption.controller,
-            scaleStateController: pageOption.scaleStateController,
-            customSize: widget.customSize,
-            heroAttributes: pageOption.heroAttributes,
-            scaleStateChangedCallback: scaleStateChangedCallback,
-            enableRotation: widget.enableRotation,
-            initialScale: pageOption.initialScale,
-            minScale: pageOption.minScale,
-            maxScale: pageOption.maxScale,
-            scaleStateCycle: pageOption.scaleStateCycle,
-            onTapUp: pageOption.onTapUp,
-            onTapDown: pageOption.onTapDown,
-            onScaleEnd: pageOption.onScaleEnd,
-            gestureDetectorBehavior: pageOption.gestureDetectorBehavior,
-            tightMode: pageOption.tightMode,
-            filterQuality: pageOption.filterQuality,
-            basePosition: pageOption.basePosition,
-            disableGestures: pageOption.disableGestures,
-          )
-        : PhotoView(
-            key: ObjectKey(index),
-            imageProvider: pageOption.imageProvider,
-            loadingBuilder: widget.loadingBuilder,
-            backgroundDecoration: widget.backgroundDecoration,
-            wantKeepAlive: widget.wantKeepAlive,
-            controller: pageOption.controller,
-            scaleStateController: pageOption.scaleStateController,
-            customSize: widget.customSize,
-            semanticLabel: pageOption.semanticLabel,
-            gaplessPlayback: widget.gaplessPlayback,
-            heroAttributes: pageOption.heroAttributes,
-            scaleStateChangedCallback: scaleStateChangedCallback,
-            enableRotation: widget.enableRotation,
-            initialScale: pageOption.initialScale,
-            minScale: pageOption.minScale,
-            maxScale: pageOption.maxScale,
-            scaleStateCycle: pageOption.scaleStateCycle,
-            onTapUp: pageOption.onTapUp,
-            onTapDown: pageOption.onTapDown,
-            onScaleEnd: pageOption.onScaleEnd,
-            gestureDetectorBehavior: pageOption.gestureDetectorBehavior,
-            tightMode: pageOption.tightMode,
-            filterQuality: pageOption.filterQuality,
-            basePosition: pageOption.basePosition,
-            disableGestures: pageOption.disableGestures,
-            errorBuilder: pageOption.errorBuilder,
-          );
+    late final PhotoView photoView;
+
+    if(isCustomChild) {
+      photoView = PhotoView.customChild(
+        key: ObjectKey(index),
+        child: pageOption.child,
+        childSize: pageOption.childSize,
+        backgroundDecoration: widget.backgroundDecoration,
+        wantKeepAlive: widget.wantKeepAlive,
+        controller: pageOption.controller,
+        scaleStateController: pageOption.scaleStateController,
+        customSize: widget.customSize,
+        heroAttributes: pageOption.heroAttributes,
+        scaleStateChangedCallback: scaleStateChangedCallback,
+        enableRotation: widget.enableRotation,
+        initialScale: pageOption.initialScale,
+        minScale: pageOption.minScale,
+        maxScale: pageOption.maxScale,
+        scaleStateCycle: pageOption.scaleStateCycle,
+        onTapUp: pageOption.onTapUp,
+        onTapDown: pageOption.onTapDown,
+        onScaleEnd: pageOption.onScaleEnd,
+        gestureDetectorBehavior: pageOption.gestureDetectorBehavior,
+        tightMode: pageOption.tightMode,
+        filterQuality: pageOption.filterQuality,
+        basePosition: pageOption.basePosition,
+        disableGestures: pageOption.disableGestures,
+      );
+    } else {
+      photoView = PhotoView(
+        key: ObjectKey(index),
+        imageProvider: pageOption.imageProvider,
+        loadingBuilder: widget.loadingBuilder,
+        backgroundDecoration: widget.backgroundDecoration,
+        wantKeepAlive: widget.wantKeepAlive,
+        controller: pageOption.controller,
+        scaleStateController: pageOption.scaleStateController,
+        customSize: widget.customSize,
+        semanticLabel: pageOption.semanticLabel,
+        gaplessPlayback: widget.gaplessPlayback,
+        heroAttributes: pageOption.heroAttributes,
+        scaleStateChangedCallback: scaleStateChangedCallback,
+        enableRotation: widget.enableRotation,
+        initialScale: pageOption.initialScale,
+        minScale: pageOption.minScale,
+        maxScale: pageOption.maxScale,
+        scaleStateCycle: pageOption.scaleStateCycle,
+        onTapUp: pageOption.onTapUp,
+        onTapDown: pageOption.onTapDown,
+        onScaleEnd: pageOption.onScaleEnd,
+        gestureDetectorBehavior: pageOption.gestureDetectorBehavior,
+        tightMode: pageOption.tightMode,
+        filterQuality: pageOption.filterQuality,
+        basePosition: pageOption.basePosition,
+        disableGestures: pageOption.disableGestures,
+        errorBuilder: pageOption.errorBuilder,
+      );
+    }
 
     return ClipRect(
       child: photoView,
     );
   }
 
-  PhotoViewGalleryPageOptions _buildPageOption(
-      BuildContext context, int index) {
+  PhotoViewGalleryPageOptions _buildPageOption(BuildContext context, int index) {
     if (widget._isBuilder) {
       return widget.builder!(context, index);
     }
@@ -380,13 +368,13 @@ class PhotoViewGalleryPageOptions {
   final String? semanticLabel;
 
   /// Mirror to [PhotoView.minScale]
-  final dynamic minScale;
+  final PhotoViewComputedScale? minScale;
 
   /// Mirror to [PhotoView.maxScale]
-  final dynamic maxScale;
+  final PhotoViewComputedScale? maxScale;
 
   /// Mirror to [PhotoView.initialScale]
-  final dynamic initialScale;
+  final PhotoViewComputedScale? initialScale;
 
   /// Mirror to [PhotoView.controller]
   final PhotoViewController? controller;

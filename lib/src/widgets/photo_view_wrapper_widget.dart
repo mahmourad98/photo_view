@@ -1,9 +1,10 @@
 import 'package:flutter/widgets.dart';
 
-import '../photo_view.dart';
-import 'core/photo_view_core.dart';
-import 'photo_view_default_widgets.dart';
-import 'utils/photo_view_utils.dart';
+import '../../photo_view.dart';
+import '../core/photo_view_core.dart';
+import '../utils/photo_view_utils.dart';
+import 'photo_view_default_error_widget.dart';
+import 'photo_view_default_loading_widget.dart';
 
 class ImageWrapper extends StatefulWidget {
   const ImageWrapper({
@@ -45,9 +46,9 @@ class ImageWrapper extends StatefulWidget {
   final PhotoViewHeroAttributes? heroAttributes;
   final ValueChanged<PhotoViewScaleState>? scaleStateChangedCallback;
   final bool enableRotation;
-  final dynamic maxScale;
-  final dynamic minScale;
-  final dynamic initialScale;
+  final PhotoViewComputedScale? maxScale;
+  final PhotoViewComputedScale? minScale;
+  final PhotoViewComputedScale? initialScale;
   final PhotoViewControllerBase controller;
   final PhotoViewScaleStateController scaleStateController;
   final Alignment? basePosition;
@@ -176,9 +177,9 @@ class _ImageWrapperState extends State<ImageWrapper> {
     }
 
     final scaleBoundaries = ScaleBoundaries(
-      widget.minScale ?? 0.0,
-      widget.maxScale ?? double.infinity,
-      widget.initialScale ?? PhotoViewComputedScale.contained,
+      widget.minScale ?? PhotoViewComputedScale.custom(0.0),
+      widget.maxScale ?? PhotoViewComputedScale.custom(double.infinity),
+      widget.initialScale ?? PhotoViewComputedScale.contained(),
       widget.outerSize,
       _imageSize!,
     );
@@ -267,9 +268,9 @@ class CustomChildWrapper extends StatelessWidget {
   final PhotoViewControllerBase controller;
   final PhotoViewScaleStateController scaleStateController;
 
-  final dynamic maxScale;
-  final dynamic minScale;
-  final dynamic initialScale;
+  final PhotoViewComputedScale? maxScale;
+  final PhotoViewComputedScale? minScale;
+  final PhotoViewComputedScale? initialScale;
 
   final Alignment? basePosition;
   final ScaleStateCycle? scaleStateCycle;
@@ -287,9 +288,9 @@ class CustomChildWrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scaleBoundaries = ScaleBoundaries(
-      minScale ?? 0.0,
-      maxScale ?? double.infinity,
-      initialScale ?? PhotoViewComputedScale.contained,
+      minScale ?? PhotoViewComputedScale.custom(0.0),
+      maxScale ?? PhotoViewComputedScale.custom(double.infinity),
+      initialScale ?? PhotoViewComputedScale.contained(),
       outerSize,
       childSize ?? outerSize,
     );
