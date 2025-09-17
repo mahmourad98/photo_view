@@ -286,7 +286,7 @@ class PhotoViewCoreState extends State<PhotoViewCore>
   Widget build(BuildContext context) {
     // Check if we need a recalc on the scale
     if (widget.scaleBoundaries != cachedScaleBoundaries) {
-      markNeedsScaleRecalc = true;
+      markNeedsScaleRecalculate = true;
       cachedScaleBoundaries = widget.scaleBoundaries;
     }
 

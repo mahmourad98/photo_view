@@ -89,22 +89,13 @@ class PhotoViewControllerValue {
   final Offset? rotationFocusPoint;
 
   @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      (other is PhotoViewControllerValue &&
-          runtimeType == other.runtimeType &&
-          position == other.position &&
-          scale == other.scale &&
-          rotation == other.rotation &&
-          rotationFocusPoint == other.rotationFocusPoint);
+  bool operator ==(Object other) => identical(this, other) || (other is PhotoViewControllerValue && runtimeType == other.runtimeType && position == other.position && scale == other.scale && rotation == other.rotation && rotationFocusPoint == other.rotationFocusPoint);
 
   @override
   int get hashCode => position.hashCode ^ scale.hashCode ^ rotation.hashCode ^ rotationFocusPoint.hashCode;
 
   @override
-  String toString() {
-    return 'PhotoViewControllerValue{position: $position, scale: $scale, rotation: $rotation, rotationFocusPoint: $rotationFocusPoint}';
-  }
+  String toString() => 'PhotoViewControllerValue{position: $position, scale: $scale, rotation: $rotation, rotationFocusPoint: $rotationFocusPoint}';
 }
 
 /// The default implementation of [PhotoViewControllerBase].
@@ -116,31 +107,37 @@ class PhotoViewControllerValue {
 ///
 class PhotoViewController implements PhotoViewControllerBase<PhotoViewControllerValue> {
   PhotoViewController({
+    required IgnorableValueNotifier<PhotoViewControllerValue>  valueNotifier,
+    required StreamController<PhotoViewControllerValue> streamController,
+  }) : _valueNotifier = valueNotifier, _outputCtrl = streamController {
+    // set initial values
+    initial = prevValue = value;
+
+    _valueNotifier.addListener(_changeListener);
+    _outputCtrl.sink.add(value);
+  }
+
+  factory PhotoViewController.factory({
     Offset initialPosition = Offset.zero,
     double initialRotation = 0.0,
     double? initialScale,
   }) {
-    // set initial values
-    initial = value;
-    prevValue = value;
-
-    _valueNotifier = IgnorableValueNotifier(
-      PhotoViewControllerValue(
-        position: initialPosition,
-        rotation: initialRotation,
-        scale: initialScale,
-        rotationFocusPoint: null,
+    return PhotoViewController(
+      valueNotifier: IgnorableValueNotifier(
+        PhotoViewControllerValue(
+          position: initialPosition,
+          rotation: initialRotation,
+          scale: initialScale,
+          rotationFocusPoint: null,
+        ),
       ),
+      streamController: StreamController<PhotoViewControllerValue>.broadcast(),
     );
-    _valueNotifier.addListener(_changeListener);
-
-    _outputCtrl = StreamController<PhotoViewControllerValue>.broadcast();
-    _outputCtrl.sink.add(initial);
   }
 
   late PhotoViewControllerValue initial;
 
-  late StreamController<PhotoViewControllerValue> _outputCtrl;
+  late final StreamController<PhotoViewControllerValue> _outputCtrl;
 
   late final IgnorableValueNotifier<PhotoViewControllerValue> _valueNotifier;
 

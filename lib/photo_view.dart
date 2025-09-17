@@ -439,7 +439,7 @@ class _PhotoViewState extends State<PhotoView> with AutomaticKeepAliveClientMixi
 
     if (widget.controller == null) {
       _controlledController = true;
-      _controller = PhotoViewController();
+      _controller = PhotoViewController.factory();
     } else {
       _controlledController = false;
       _controller = widget.controller!;
@@ -461,7 +461,7 @@ class _PhotoViewState extends State<PhotoView> with AutomaticKeepAliveClientMixi
     if (widget.controller == null) {
       if (!_controlledController) {
         _controlledController = true;
-        _controller = PhotoViewController();
+        _controller = PhotoViewController.factory();
       }
     } else {
       _controlledController = false;

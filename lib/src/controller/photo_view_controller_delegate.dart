@@ -19,7 +19,7 @@ mixin PhotoViewControllerDelegate on State<PhotoViewCore> {
   Function(double prevScale, double nextScale)? _animateScale;
 
   /// Mark if scale need recalculation, useful for scale boundaries changes.
-  bool markNeedsScaleRecalc = true;
+  bool markNeedsScaleRecalculate = true;
 
   void initDelegate() {
     controller.addIgnorableListener(_blindScaleListener);
@@ -73,15 +73,15 @@ mixin PhotoViewControllerDelegate on State<PhotoViewCore> {
 
   double get scale {
     // for figuring out initial scale
-    final needsRecalc = markNeedsScaleRecalc && !scaleStateController.scaleState.isScaleStateZooming;
+    final needsRecalculate = markNeedsScaleRecalculate && !scaleStateController.scaleState.isScaleStateZooming;
 
     final scaleExistsOnController = controller.scale != null;
-    if (needsRecalc || !scaleExistsOnController) {
+    if (needsRecalculate || !scaleExistsOnController) {
       final newScale = getScaleForScaleState(
         scaleStateController.scaleState,
         scaleBoundaries,
       );
-      markNeedsScaleRecalc = false;
+      markNeedsScaleRecalculate = false;
       scale = newScale;
       return newScale;
     }

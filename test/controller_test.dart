@@ -6,13 +6,13 @@ import 'package:test/test.dart';
 void main() {
   late PhotoViewController controller;
   setUp(() {
-    controller = PhotoViewController();
+    controller = PhotoViewController.factory();
   });
 
   test('controller constructor', () {
     const double initialRotation = 0.0;
     const Offset initialPosition = Offset(40.0, 40.0);
-    controller = PhotoViewController(
+    controller = PhotoViewController.factory(
       initialRotation: initialRotation,
       initialPosition: initialPosition,
     );
